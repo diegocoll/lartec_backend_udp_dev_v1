@@ -1,0 +1,32 @@
+{
+  "name": "lartec_backend_udp_dev_v1",
+  "version": "1.0.0",
+  "description": "servidor de paquetes udp - creado el 2-2-2018",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diegocoll/lartec_backend_udp_dev_v1.git"
+  },
+  "author": "diego coll",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diegocoll/lartec_backend_udp_dev_v1/issues"
+  },
+  "homepage": "https://github.com/diegocoll/lartec_backend_udp_dev_v1#readme",
+  "dependencies": {
+    "mongoose": "^5.0.3",
+    "socket.io-client": "^2.0.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.16.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1"
+  }
+}
