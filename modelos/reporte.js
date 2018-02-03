@@ -25,7 +25,7 @@ var ReporteEsq = new Schema ({
 	id:  String,	        //identificador de equipo (6c)
 	nmg: String 	        //numero de mensaje (7h)
 
-	});
+},{ collection: 'Reporte' });
 
 
 //------------------------------------ Exportacion de modulo

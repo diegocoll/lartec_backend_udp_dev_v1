@@ -54,7 +54,7 @@ var EquipoEsq = new Schema ({
 	dig: String,			//estado de entradas digitales (2h)
 	nmg: String 			//numero de mensaje (7h)
 
-	});
+},{ collection: 'Equipo' });
 
 //------------------------------------ Exportacion de modulos
 

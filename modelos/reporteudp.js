@@ -13,7 +13,7 @@ var ReporteudpEsq = new Schema ({
 	fecserv: { type: Date, default: Date.now },	    //fecha del servidor al momento de la recepcion (6c)
 	//horserv: Date,	  //hora del servidor al momento de la recepcion (6c)
 
-	});
+},{ collection: 'Reporteudp' });
 
 //------------------------------------ Exportacion de modulos
 
