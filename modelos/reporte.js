@@ -22,8 +22,9 @@ var ReporteEsq = new Schema ({
 	csq: String,	        //calida señal gsm (2c)
 	evt: String,	        //evento generarl (2h)
 	dig: String,					//estado de entradas digitales (2h)
-	id:  String,	        //identificador de equipo (6c)
-	nmg: String 	        //numero de mensaje (7h)
+	id_e: String,	        //identificador de equipo (6c)
+	nmg: String, 	        //numero de mensaje (7h)
+	id_e_obj: Object      //identificador de equipo (6c)
 
 },{ collection: 'Reporte' });
 

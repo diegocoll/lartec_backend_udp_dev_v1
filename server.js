@@ -126,7 +126,7 @@ function log_reporte_udp(remote, reporte_str, id_eqp_rpt, numero_rpt){
 };
 
 
-function grabado_reporte_RGP(remote, rpt){
+function grabado_reporte_RGP(remote, rpt, objectId){
 
 	//------------------------------------ Creacion del esquema
 
@@ -149,8 +149,9 @@ function grabado_reporte_RGP(remote, rpt){
 		csq: rpt[0].substr(44,2),      //calida señal gsm (2c)
 		dig: rpt[0].substr(46,2),      //estado de entradas digitales (2h)
 		evt: rpt[0].substr(48,2),      //evento generarl (2h)
-		id:  rpt[1].substr(0,5),   		 //identificador de equipo (6c)
-		nmg: rpt[2].substr(0,4)        //numero de mensaje (7h)
+		id_e: rpt[1].substr(0,5),   	 //identificador de equipo (6c)
+		nmg: rpt[2].substr(0,4),        //numero de mensaje (7h)
+		id_e_obj: objectId
 	});
 
 	// console.log(Reporte);
@@ -162,22 +163,32 @@ function grabado_reporte_RGP(remote, rpt){
 			console.log("Error al guardar los datos");
 			console.log(err);
 		}
-			equipo_reporte_RGP(remote, Reporte);
-		// else {
-		// 	console.log("guardado correcto");
-		// }
+		else {
+			console.log("guardado correcto");
+			// equipo_reporte_RGP(remote, Reporte);
+		}
 	});
 };
 
-function equipo_reporte_RGP(remote, reporte){
+function equipo_reporte_RGP(remote, rpt){
 
 //----------------------------------------------------------------- busqueda del equipo en la base de datos
 
-	EQUIPO.findOne({equipo_id:reporte.id}, function(err,Equipo){
+	var id_e = rpt[1].substr(0,5);
+
+	EQUIPO.findOne({equipo_id:id_e}, function(err,Equipo){
 		if (Equipo==null){
+
 			//console.log("Equipo NO encontrado en la base de datos de equipos");
 
+			var objectId = mongoose.Types.ObjectId();
+			// var objectId = new ObjectID(); // Generacion del objectId
+
+			grabado_reporte_RGP(remote, rpt, objectId);
+
 			var Equipo = new EQUIPO({
+
+				_id: objectId,							//objectId generado
 
 				ip: 	 remote.address,  	//ultima direccion ip del equipo (6c)
 				puerto:  remote.port,			//puerto del equipo (6c)
@@ -185,7 +196,7 @@ function equipo_reporte_RGP(remote, reporte){
 				estado:  "ok",						//estado del equipo
 				empresa: "Indefinido",		//empresa a la que pertenece el equipo
 				vehiculo: "Indefinido",		//vehiculo al que pertenece el equipo
-				equipo_id: reporte.id,
+				equipo_id: rpt[1].substr(0,5),
 
 				ip_serv: 	 	   HOST,  		//ip del servidor a reportar
 				puerto_serv: 	 PORT,	  	//puerto del servidor a reportar
@@ -198,20 +209,35 @@ function equipo_reporte_RGP(remote, reporte){
 				fec_modi: new Date(),				//fecha del servidor al momento de la recepcion del ultimo reporte (6c)
 				fec_ulti: new Date(),				//fecha del servidor al momento de la recepcion del ultimo reporte (6c)
 
-				enc: reporte.enc,				  //encabezado de mensaje (3c)
-				fec: reporte.fec,					//fecha (6c)
-				hor: reporte.hor, 				//hora (6c)
-				lat: reporte.lat, 				//latitud (9c)
-				lon: reporte.lon, 				//longitud (9c)
-				vel: reporte.vel,					//velocidad (3c)
-				dir: reporte.dir,					//direccion (3c)
-				gps: reporte.gps,					//calida señal gps 1 = nada ; 2 = 2d ; 3 = 3d (1c)
-				eda: reporte.eda,					//edad de gps (2h)
-				csq: reporte.csq,					//calida señal gsm (2c)
-				evt: reporte.evt,					//evento generarl (2h)
-				dig: reporte.dig,					//estado de entradas digitales (2h)
-				// id:  reporte.id,					//identificador de equipo (6c)
-				nmg: reporte.nmg  				//numero de mensaje (7h)
+				enc: rpt[0].substr(1,3),    	 //encabezado de mensaje (3c)
+				fec: rpt[0].substr(4,6),       //fecha (6c)
+				hor: rpt[0].substr(10,6),      //hora (6c)
+				lat: rpt[0].substr(16,9),      //latitud (9c)
+				lon: rpt[0].substr(25,10),     //longitud (9c)
+				vel: rpt[0].substr(35,3),    	 //velocidad (3c)
+				dir: rpt[0].substr(38,3),    	 //direccion (3c)
+				gps: rpt[0].substr(41,1),      //calida señal gps 1 = nada ; 2 = 2d ; 3 = 3d (1c)
+				eda: rpt[0].substr(42,2),      //edad de gps (2h)
+				csq: rpt[0].substr(44,2),      //calida señal gsm (2c)
+				dig: rpt[0].substr(46,2),      //estado de entradas digitales (2h)
+				evt: rpt[0].substr(48,2),      //evento generarl (2h)
+				// id_e: rpt[1].substr(0,5),   	 //identificador de equipo (6c)
+				nmg: rpt[2].substr(0,4)        //numero de mensaje (7h)
+
+				// enc: reporte.enc,				  //encabezado de mensaje (3c)
+				// fec: reporte.fec,					//fecha (6c)
+				// hor: reporte.hor, 				//hora (6c)
+				// lat: reporte.lat, 				//latitud (9c)
+				// lon: reporte.lon, 				//longitud (9c)
+				// vel: reporte.vel,					//velocidad (3c)
+				// dir: reporte.dir,					//direccion (3c)
+				// gps: reporte.gps,					//calida señal gps 1 = nada ; 2 = 2d ; 3 = 3d (1c)
+				// eda: reporte.eda,					//edad de gps (2h)
+				// csq: reporte.csq,					//calida señal gsm (2c)
+				// evt: reporte.evt,					//evento generarl (2h)
+				// dig: reporte.dig,					//estado de entradas digitales (2h)
+				// // id:  reporte.id_e,					//identificador de equipo (6c)
+				// nmg: reporte.nmg  				//numero de mensaje (7h)
 				});
 
 			Equipo.save(function (err) {
@@ -219,10 +245,11 @@ function equipo_reporte_RGP(remote, reporte){
 					console.log("Error al guardar los datos en la base de equipos");
 					console.log(err);
 				}
-				// else{
-					// console.log("Nuevo equipo creado en la base de equipos");
+				else{
+					// grabado_reporte_RGP(remote, rpt)
 					// client.emit('nuevoequipo',Equipo);
-					// }
+					// console.log("Nuevo equipo creado en la base de equipos");
+				}
 			});
 		}
 		else{
@@ -233,6 +260,12 @@ function equipo_reporte_RGP(remote, reporte){
 
 			//----------------------------------------------------------------- guardado en la base de equipos
 
+			var objectId = mongoose.Types.ObjectId(Equipo.id);
+
+			grabado_reporte_RGP(remote, rpt, objectId);
+
+			// console.log(Equipo.id);
+
 			Equipo.ip = 	 	 remote.address;  //ultima direccion ip del equipo (6c)
 			Equipo.puerto =  remote.port;			//puerto del equipo (6c)
 
@@ -241,35 +274,35 @@ function equipo_reporte_RGP(remote, reporte){
 
 			Equipo.fec_ulti = new Date();				//fecha del servidor al momento de la recepcion del ultimo reporte (6c)
 
-			Equipo.enc	= reporte.enc;				//encabezado de mensaje (3c)
+			Equipo.enc	= rpt[0].substr(1,3);				//encabezado de mensaje (3c)
 
-			Equipo.fec	= reporte.fec;			//fecha (6c)
+			Equipo.fec	= rpt[0].substr(4,6);			//fecha (6c)
 
-		  Equipo.hor	= reporte.hor;			//hora (6c)
+		  Equipo.hor	= rpt[0].substr(10,6);			//hora (6c)
 
-			if (reporte.lat.substr(1,1) != "?") {
-				Equipo.lat	= reporte.lat; 			//latitud (9c)
+			if (rpt[0].substr(16,9).substr(1,1) != "?") {
+				Equipo.lat	= rpt[0].substr(16,9); 			//latitud (9c)
 			};
 
-			if (reporte.lon.substr(1,1) != "?") {
-				Equipo.lon	= reporte.lon; 			//longitud (9c)
+			if (rpt[0].substr(25,10).substr(1,1) != "?") {
+				Equipo.lon	= rpt[0].substr(25,10); 			//longitud (9c)
 			};
 
-			if (reporte.vel.substr(1,1) != "?") {
-				Equipo.vel	= reporte.vel;			//velocidad (3c)
+			if (rpt[0].substr(35,3).substr(1,1) != "?") {
+				Equipo.vel	= rpt[0].substr(35,3);			//velocidad (3c)
 			};
 
-			if (reporte.dir.substr(1,1) != "?") {
-				Equipo.dir	= reporte.dir;			//direccion (3c)
+			if (rpt[0].substr(38,3).substr(1,1) != "?") {
+				Equipo.dir	= rpt[0].substr(38,3);			//direccion (3c)
 			};
 
-			Equipo.gps	= reporte.gps;				//calida señal gps 1 = nada ; 2 = 2d ; 3 = 3d (1c)
-			Equipo.eda	= reporte.eda;				//edad de gps (2h)
-			Equipo.csq	= reporte.csq;				//calida señal gsm (2c)
-			Equipo.evt	= reporte.evt;				//evento generarl (2h)
-			Equipo.dig	= reporte.dig;				//estado de entradas digitales (2h)
-			//Equipo.id	= reporte.id;					//identificador de equipo (6c)
-			Equipo.nmg	= reporte.nmg; 				//numero de mensaje (7h)
+			Equipo.gps	= rpt[0].substr(41,1);				//calida señal gps 1 = nada ; 2 = 2d ; 3 = 3d (1c)
+			Equipo.eda	= rpt[0].substr(42,2);				//edad de gps (2h)
+			Equipo.csq	= rpt[0].substr(44,2);				//calida señal gsm (2c)
+			Equipo.evt	= rpt[0].substr(48,2);				//evento generarl (2h)
+			Equipo.dig	= rpt[0].substr(46,2);				//estado de entradas digitales (2h)
+			//Equipo.id_e	= rpt[1].substr(0,5);				//identificador de equipo (6c)
+			Equipo.nmg	= rpt[2].substr(0,4); 				//numero de mensaje (7h)
 
 			Equipo.save(function (err) {
 				if (err){
@@ -337,7 +370,8 @@ server.on("message", function (reporte, remote) {
 
 		      if (reporte.length === 66){
 		      	log_reporte_udp(remote,reporte_str,id_eqp_rpt,numero_rpt);
-						grabado_reporte_RGP(remote, rpt);
+						equipo_reporte_RGP(remote, rpt);
+						// grabado_reporte_RGP(remote, rpt);
 		      } else {
 						console.log('Longitud incorrecta RGP');
 					}
