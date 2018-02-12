@@ -80,7 +80,7 @@ function checksumf (strinn){
 
 function log_reporte_udp(remote, reporte_str, id_eqp_rpt, numero_rpt){
 
-	console.log(reporte_str);
+	// console.log(reporte_str);
 
 	//------------------------------------ Creacion del esquema
 
@@ -359,6 +359,7 @@ server.on("message", function (reporte, remote) {
     //------------------------------------ Identificacion de cabecera y Validacion del longitud
 
   	//identifica el tipo de reporte que llega al servidor y hace una comprobacion de longitud diferente!!
+		log_reporte_udp(remote,reporte_str,id_eqp_rpt,numero_rpt);
 
   	switch (cabeza_rpt)
       {
@@ -371,9 +372,8 @@ server.on("message", function (reporte, remote) {
 					// if (reporte.length === 66 || reporte.length === 65){
 
 		      if (reporte.length === 66){
-		      	log_reporte_udp(remote,reporte_str,id_eqp_rpt,numero_rpt);
-						console.log('RGP');
 						equipo_reporte_RGP(remote, rpt);
+						// console.log('RGP');
 						// grabado_reporte_RGP(remote, rpt);
 		      } else {
 						console.log('Longitud incorrecta RGP');
@@ -382,8 +382,8 @@ server.on("message", function (reporte, remote) {
         case "ROP":
           // if (reporte.length === 79 || reporte.length === 78){
           if (reporte.length === 79){
-          	log_reporte_udp(remote,reporte_str,id_eqp_rpt,numero_rpt);
-						console.log('ROP');
+          	// log_reporte_udp(remote,reporte_str,id_eqp_rpt,numero_rpt);
+						// console.log('ROP');
 						// AGREGAR LA FUNCION ESPECITICA PARA ESTE TIPO DE REPORTE
           } else {
   					console.log('Longitud incorrecta ROP');
@@ -392,8 +392,8 @@ server.on("message", function (reporte, remote) {
         case "RTP":
           // if (reporte.length === 80 || reporte.length === 79){
           if (reporte.length === 80){
-          	log_reporte_udp(remote,reporte_str,id_eqp_rpt,numero_rpt);
-						console.log('RTP');
+          	// log_reporte_udp(remote,reporte_str,id_eqp_rpt,numero_rpt);
+						// console.log('RTP');
 						// AGREGAR LA FUNCION ESPECITICA PARA ESTE TIPO DE REPORTE
           } else {
 		  			console.log('Longitud incorrecta RTP');
