@@ -166,7 +166,7 @@ function grabado_reporte_RGP(remote, rpt, objectId){
 			console.log(err);
 		}
 		else {
-			console.log("guardado correcto");
+			// console.log("guardado correcto");
 			// equipo_reporte_RGP(remote, Reporte);
 		}
 	});
@@ -333,7 +333,7 @@ server.on("error", function (err) {
 
 server.on("message", function (reporte, remote) {
 
-	console.log("reporte: " + reporte + " de " + remote.address + ":" + remote.port);
+	// console.log("reporte: " + reporte + " de " + remote.address + ":" + remote.port);
 
   var reporte_str = reporte.toString().toUpperCase();
 
@@ -373,7 +373,7 @@ server.on("message", function (reporte, remote) {
 
 		      if (reporte.length === 66){
 						equipo_reporte_RGP(remote, rpt);
-						console.log('RGP');
+						// console.log('RGP');
 						// grabado_reporte_RGP(remote, rpt);
 		      } else {
 						console.log('Longitud incorrecta RGP');
@@ -397,14 +397,17 @@ server.on("message", function (reporte, remote) {
 						// AGREGAR LA FUNCION ESPECITICA PARA ESTE TIPO DE REPORTE
           } else {
 		  			console.log('Longitud incorrecta RTP');
+						console.log(reporte);
 		  		}
           break;
         default:
           console.log('Cabeza de reporte no identificada: ' + cabeza_rpt);
+					console.log(reporte);
           break;
       }
   } else {
   		console.log('checksum incorrecto');
+			console.log(reporte);
   }
 });
 
