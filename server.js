@@ -333,7 +333,7 @@ server.on("error", function (err) {
 
 server.on("message", function (reporte, remote) {
 
-	// console.log("reporte: " + reporte + " de " + remote.address + ":" + remote.port);
+	console.log("reporte: " + reporte + " de " + remote.address + ":" + remote.port);
 
   var reporte_str = reporte.toString().toUpperCase();
 
@@ -373,7 +373,7 @@ server.on("message", function (reporte, remote) {
 
 		      if (reporte.length === 66){
 						equipo_reporte_RGP(remote, rpt);
-						// console.log('RGP');
+						console.log('RGP');
 						// grabado_reporte_RGP(remote, rpt);
 		      } else {
 						console.log('Longitud incorrecta RGP');
@@ -383,7 +383,7 @@ server.on("message", function (reporte, remote) {
           // if (reporte.length === 79 || reporte.length === 78){
           if (reporte.length === 79){
           	// log_reporte_udp(remote,reporte_str,id_eqp_rpt,numero_rpt);
-						// console.log('ROP');
+						console.log('ROP');
 						// AGREGAR LA FUNCION ESPECITICA PARA ESTE TIPO DE REPORTE
           } else {
   					console.log('Longitud incorrecta ROP');
@@ -393,7 +393,7 @@ server.on("message", function (reporte, remote) {
           // if (reporte.length === 80 || reporte.length === 79){
           if (reporte.length === 80){
           	// log_reporte_udp(remote,reporte_str,id_eqp_rpt,numero_rpt);
-						// console.log('RTP');
+						console.log('RTP');
 						// AGREGAR LA FUNCION ESPECITICA PARA ESTE TIPO DE REPORTE
           } else {
 		  			console.log('Longitud incorrecta RTP');
