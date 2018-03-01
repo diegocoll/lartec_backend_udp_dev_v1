@@ -128,7 +128,8 @@ function log_reporte_udp(remote, reporte_str, id_eqp_rpt, numero_rpt){
 };
 
 
-function grabado_reporte_RGP(remote, rpt, objectId){
+// function grabado_reporte_RGP(remote, rpt, id_e){
+function grabado_reporte_RGP(remote, rpt){
 
 	//------------------------------------ Creacion del esquema
 
@@ -153,7 +154,7 @@ function grabado_reporte_RGP(remote, rpt, objectId){
 		evt: rpt[0].substr(48,2),      //evento generarl (2h)
 		id_e: rpt[1].substr(0,5),   	 //identificador de equipo (6c)
 		nmg: rpt[2].substr(0,4),        //numero de mensaje (7h)
-		id_e_obj: objectId
+		// id_e_obj: objectId
 	});
 
 	// console.log(Reporte);
@@ -178,19 +179,29 @@ function equipo_reporte_RGP(remote, rpt){
 
 	var id_e = rpt[1].substr(0,5);
 
-	EQUIPO.findOne({equipo_id:id_e}, function(err,Equipo){
+	EQUIPO.findOne({_id:id_e}, function(err,Equipo){
 		if (Equipo==null){
 
 			//console.log("Equipo NO encontrado en la base de datos de equipos");
 
-			var objectId = mongoose.Types.ObjectId();
+			// ------------------------------------------------------------
+			// var objectId = mongoose.Types.ObjectId();
 			// var objectId = new ObjectID(); // Generacion del objectId
 
-			grabado_reporte_RGP(remote, rpt, objectId);
+			// LAS lINEAS ANTERIORES SE USABAN CUANDO LOS EQUIPOS TENIAN ID GENERADO CON UN ObjectID... SE CAMBIO A LA OTRA MANERA PORQUE SE COMPLICABA MUCHO EL CODIGO
+			// ------------------------------------------------------------
+
+			// grabado_reporte_RGP(remote, rpt);
 
 			var Equipo = new EQUIPO({
 
-				_id: objectId,							//objectId generado
+				// -----------------------------------------------------------
+				// _id: objectId,							//objectId generado
+
+				// lA lINEA ANTERIOR SE USABA CUANDO LOS EQUIPOS TENIAN ID GENERADO CON UN ObjectID... SE CAMBIO A LA OTRA MANERA PORQUE SE COMPLICABA MUCHO EL CODIGO, SE REMPLASO POR EL DE ABAJO.
+				// ------------------------------------------------------------
+
+				_id: id_e,								//ID asignado por reporte ENTRANTE
 
 				ip: 	 remote.address,  	//ultima direccion ip del equipo (6c)
 				puerto:  remote.port,			//puerto del equipo (6c)
@@ -198,7 +209,7 @@ function equipo_reporte_RGP(remote, rpt){
 				estado:  "ok",						//estado del equipo
 				empresa: "Indefinido",		//empresa a la que pertenece el equipo
 				vehiculo: "Indefinido",		//vehiculo al que pertenece el equipo
-				equipo_id: rpt[1].substr(0,5),
+				// equipo_id: rpt[1].substr(0,5),
 
 				ip_serv: 	 	   HOST,  		//ip del servidor a reportar
 				puerto_serv: 	 PORT,	  	//puerto del servidor a reportar
@@ -262,9 +273,9 @@ function equipo_reporte_RGP(remote, rpt){
 
 			//----------------------------------------------------------------- guardado en la base de equipos
 
-			var objectId = mongoose.Types.ObjectId(Equipo.id);
+			// var objectId = mongoose.Types.ObjectId(Equipo.id);
 
-			grabado_reporte_RGP(remote, rpt, objectId);
+			// grabado_reporte_RGP(remote, rpt);
 
 			// console.log(Equipo.id);
 
@@ -282,12 +293,15 @@ function equipo_reporte_RGP(remote, rpt){
 
 		  Equipo.hor	= rpt[0].substr(10,6);			//hora (6c)
 
+			// ---------------------------------------------------------------------------
+			// AGREGAR CODIGO PARA QUE NO GUARDE EN LA BASE DE DATOS DE REPORTES VALIDOS SI SE DETECTAN "?", SI QUE LO GUARDE EN EL LOG DE REPORTES PARA CONTROL Y DETECCION DE ERRORES
+
 			if (rpt[0].substr(16,9).substr(1,1) != "?") {
 				Equipo.lat	= rpt[0].substr(16,9); 			//latitud (9c)
 			};
 
 			if (rpt[0].substr(25,10).substr(1,1) != "?") {
-				Equipo.lon	= rpt[0].substr(25,10); 			//longitud (9c)
+				Equipo.lon	= rpt[0].substr(25,10); 		//longitud (9c)
 			};
 
 			if (rpt[0].substr(35,3).substr(1,1) != "?") {
@@ -297,6 +311,7 @@ function equipo_reporte_RGP(remote, rpt){
 			if (rpt[0].substr(38,3).substr(1,1) != "?") {
 				Equipo.dir	= rpt[0].substr(38,3);			//direccion (3c)
 			};
+			// ---------------------------------------------------------------------------
 
 			Equipo.gps	= rpt[0].substr(41,1);				//calida señal gps 1 = nada ; 2 = 2d ; 3 = 3d (1c)
 			Equipo.eda	= rpt[0].substr(42,2);				//edad de gps (2h)
@@ -372,6 +387,7 @@ server.on("message", function (reporte, remote) {
 					// if (reporte.length === 66 || reporte.length === 65){
 
 		      if (reporte.length === 66){
+						grabado_reporte_RGP(remote, rpt);
 						equipo_reporte_RGP(remote, rpt);
 						// console.log('RGP');
 						// grabado_reporte_RGP(remote, rpt);

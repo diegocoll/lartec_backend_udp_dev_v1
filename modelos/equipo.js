@@ -21,7 +21,8 @@ var EquipoEsq = new Schema ({
 
   empresa:       String,    //identificador de la empresa
 	vehiculo:  	 	 String,	  //patente del vehiculo
-	equipo_id:	 	 String,	  //identificador de equipo (6c)
+	_id:	 	 			 String,	  //identificador de equipo (6c)
+	// equipo_id:	 	 String,	  //identificador de equipo (6c)
 
 	ip_serv: 	 	   String,  	//ip del servidor a reportar
 	puerto_serv: 	 String,	  //puerto del servidor a reportar
